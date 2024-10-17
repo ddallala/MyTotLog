@@ -1,0 +1,25 @@
+.user-message {
+    --border-radius: 20px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+    margin-left: auto;
+    margin-right: 10px;
+    max-width: 75%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .other-message {
+    --border-radius: 20px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+    margin-right: auto;
+    margin-left: 10px;
+    max-width: 75%;
+    display: flex;
+    align-items: center;
+  }
+  
+  ion-icon {
+    margin-right: 10px;
+  }

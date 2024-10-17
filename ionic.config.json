@@ -1,0 +1,7 @@
+{
+  "name": "my-tot-log",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

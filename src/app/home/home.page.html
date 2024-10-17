@@ -1,0 +1,238 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>My Tot Log</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="shareApp()">
+        <ion-icon name="share-outline"></ion-icon>
+        Invite partner
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-progress-bar *ngIf="loadingActivities" type="indeterminate"></ion-progress-bar>
+
+  <!-- Feeds Summary (REQ 4) -->
+  <ion-card id="stats">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="stats-chart-outline"></ion-icon>
+        Today's KPIs ({{ today | date: 'MMM d, y' }})
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <!-- Total Amount -->
+          <ion-col size="4">
+            <ion-card color="light" class="kpi-card">
+              <ion-card-content class="kpi-content">
+                <div class="kpi-number">{{ totalFeeds_today }} ml</div>
+                <div class="kpi-title">Total Amount</div>
+                <div class="kpi-subtext">
+                  Required at {{ babyweight_kg | number:'1.2-2' }} kg:
+                  <strong>{{ amount_required_per_day }} ml/day</strong>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <!-- Number of Feeds -->
+          <ion-col size="4">
+            <ion-card color="light" class="kpi-card">
+              <ion-card-content class="kpi-content">
+                <div class="kpi-number">{{ numberOfFeeds_today }}</div>
+                <div class="kpi-title">Number of Feeds</div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <!-- Average Amount Per Feed -->
+          <ion-col size="4">
+            <ion-card color="light" class="kpi-card">
+              <ion-card-content class="kpi-content">
+                <div class="kpi-number">{{ avgAmountPerFeed_today| number:'1.2-2' }} ml/feed</div>
+                <div class="kpi-title">Avg Amount Per Feed</div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Feeds Summary (REQ 4) -->
+  <ion-card id="stats">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="stats-chart-outline"></ion-icon>
+        24-Hour KPIs
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <!-- Total Amount -->
+          <ion-col size="4">
+            <ion-card color="light" class="kpi-card">
+              <ion-card-content class="kpi-content">
+                <div class="kpi-number">{{ totalFeeds_24hrs }} ml</div>
+                <div class="kpi-title">Total Amount</div>
+                <div class="kpi-subtext">
+                  Required at {{ babyweight_kg | number:'1.2-2' }} kg:
+                  <strong>{{ amount_required_per_day }} ml/day</strong>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <!-- Number of Feeds -->
+          <ion-col size="4">
+            <ion-card color="light" class="kpi-card">
+              <ion-card-content class="kpi-content">
+                <div class="kpi-number">{{ numberOfFeeds_24hrs }}</div>
+                <div class="kpi-title">Number of Feeds</div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <!-- Average Amount Per Feed -->
+          <ion-col size="4">
+            <ion-card color="light" class="kpi-card">
+              <ion-card-content class="kpi-content">
+                <div class="kpi-number">{{ avgAmountPerFeed_24hrs | number:'1.2-2' }} ml/feed</div>
+                <div class="kpi-title">Avg Amount Per Feed</div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- INSIGHTS from insights -->
+  <ion-card id="insights">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="bulb-outline"></ion-icon> AI Assistant
+        <!-- Add the copy icon here -->
+        <ion-icon class="copy-icon" name="copy-outline" (click)="copyToClipboard()"></ion-icon>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div [innerHTML]="insights | markdown | async"></div>
+      <ion-list *ngIf="loadingInsights">
+        <ion-item>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ion-item>
+        <ion-label>Model Provider</ion-label>
+        <ion-select [(ngModel)]="useModelFrom" (ionChange)="onModalProviderChange($event)">
+          <ion-select-option value="openai">OpenAI</ion-select-option>
+          <ion-select-option value="anthropic">Anthropic</ion-select-option>
+          <ion-select-option value="google">Google</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+
+      <!-- Add the chat button with an icon and a click event -->
+      <ion-button class="chat-button" expand="block" fill="outline" (click)="openChatModal($event)" [disabled]="activities.length === 0">
+        <ion-icon slot="start" name="chatbubble-outline"></ion-icon>
+        Chat with AI
+      </ion-button>
+
+
+    </ion-card-content>
+  </ion-card>
+
+  <!--- Charts -->
+  <ion-card id="charts">
+    <ion-card-header>
+      <ion-card-title>Chart</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas id="timelineChart"></canvas>
+      <div>
+        <ion-button size="small" color="light" (click)="updateChartData(7)">Last 7 Days</ion-button>
+        <ion-button size="small" color="light" (click)="updateChartData(14)">Last 2 Weeks</ion-button>
+        <ion-button size="small" color="light" (click)="updateChartData(30)">Last 1 Month</ion-button>
+        <ion-button size="small" color="light" (click)="updateChartData(60)">Last 3 Months</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Timeline (REQ 3.C) -->
+  <ion-card id="timeline">
+    <ion-card-header>
+      <ion-card-title><ion-icon name="film-outline"></ion-icon> Timeline</ion-card-title>
+      <ion-card-subtitle>Last {{activities.length}} activities</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <b>{{ hours_since_last_activity_string}}</b>&nbsp;since {{ babyname }}'s last feed
+        </ion-item>
+      </ion-list>
+      <ion-list *ngFor="let group of groupedActivities">
+        <ion-list-header>
+          <ion-label><strong>{{ formatGroupDate(group.date) | uppercase }}</strong></ion-label>
+        </ion-list-header>
+        <ion-item *ngFor="let activity of group.activities; let i = index">
+          <ion-label>
+            <h2><ion-icon name="fast-food-outline"></ion-icon> {{ activity.type | titlecase }}
+              ({{group.activities.length-i}})</h2>
+            <b>{{ activity.createdate_localisodatetimestring | date: 'shortTime' }}</b> | <i> {{ activity.hours_since_last_feed }} since last feed</i>
+            <p *ngIf="activity.type === 'feed'">{{ activity.amount }} mL</p>
+            <p *ngIf="activity.note"><i>* {{ activity.note }}</i></p>
+          </ion-label>
+          <ion-buttons slot="end">
+            <ion-button color="primary" (click)="openActiviyModal($event, activity)">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button color="danger" (click)="deleteActivity(activity)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openActiviyModal($event)">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
+
+<!-- Footer Section -->
+<ion-footer>
+  <ion-toolbar>
+    <ion-card-subtitle>
+      Session ID:
+      <a href="#" (click)="openSessionModal($event)">
+        {{ sessionId }}
+      </a>
+    </ion-card-subtitle>
+    <ion-card-subtitle>Build: {{ version }}</ion-card-subtitle>
+    <ion-buttons (click)="openBabyModal($event)" slot="end">
+      <ion-button>
+        <ion-icon name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-button *ngIf="pwaService.installable" expand="block" fill="full" (click)="installPwa()">
+      <ion-icon slot="start" name="download-outline"></ion-icon>
+      Install App
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Chat with AI Assistant ({{useModelFrom}})</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let message of messages_on_screen" [ngClass]="{'user-message': message.role === 'user', 'other-message': message.role !== 'other'}">
+      <ion-icon *ngIf="message.role === 'user'" name="person-circle-outline" slot="start"></ion-icon>
+      <ion-icon *ngIf="message.role !== 'user'" name="bulb-outline" slot="start"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        <div [innerHTML]="message.content | markdown | async"></div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-input [disabled]="messageInputDisabled" [(ngModel)]="newMessage" placeholder="Chat with data" (keydown.enter)="sendMessage()"></ion-input>
+      <ion-button slot="end" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
