@@ -24,13 +24,26 @@ git clone https://github.com/ddallala/https://github.com/ddallala/MyTotLog.git
 cd MyTotLog
 ```
 
-### Install Dependencies
+### Install Dependencies in both root and functions
 
 Install all required dependencies:
 
 ```bash
 npm install
 ```
+
+```bash
+cd functions
+npm install
+```
+
+### Create the environment files (see src/environments/environment.example.ts)
+```bash
+cp src/environments/environment.example.ts src/environments/environment.prod.ts
+cp src/environments/environment.example.ts src/environments/environment.ts
+```
+And update with your own firebase configuration settings.
+Update the prod file to: production: true
 
 ### Running the Application
 
@@ -42,7 +55,7 @@ ionic serve
 
 This will start the development server and open the app in your default web browser.
 
-### Firebase Setup
+### Firebase Setup for hosting and functions
 
 1. **Install Firebase CLI**: Ensure you have the Firebase CLI installed globally:
 
@@ -56,7 +69,7 @@ This will start the development server and open the app in your default web brow
    firebase login
    ```
 
-3. **Initialize Firebase**: Run Firebase initialization in your project folder. This will set up Firebase Hosting and Firestore:
+3. A. **Initialize New Firebase**: Run Firebase initialization in your project folder. This will set up Firebase Hosting and Firestore:
 
    ```bash
    firebase init
@@ -67,6 +80,13 @@ This will start the development server and open the app in your default web brow
    - Select **Hosting** (configure files for Firebase Hosting).
    - Set the public directory to `www`.
    - Choose "Yes" for single-page app configuration.
+
+3. B. **Use Existing Firebase**: Run Firebase initialization in your project folder. This will set up Firebase Hosting and Firestore:
+
+   ```bash
+   firebase projects:list
+   firebase use --add <project-id>
+   ```
    
 ### Building the Application for Production
 
