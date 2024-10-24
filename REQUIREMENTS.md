@@ -24,7 +24,8 @@
 
 ## Tech requirements
 1. App should works as a PWA, and be mobile optimized
-2. Database to store sessions, activities, baby info, settings and chats should be in Firestore
-3. LLM insights and chat should support latest OpenAI, Anthropic, Google models
-4. Should use Langchain to abstract LLM logic
-5. Use Langsmith to log all LLM calls
+2. App is built using Ionic/Angular framework
+3. Database to store sessions, activities, baby info, settings and chats should be in Firestore
+4. LLM insights and chat should support latest OpenAI, Anthropic, Google models
+5. Should use Langchain to abstract LLM logic
+6. Use Langsmith to log all LLM calls
