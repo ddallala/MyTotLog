@@ -862,7 +862,7 @@ export class BabyModalComponent {
 
         </ion-item>
         <ion-item>
-          <ion-range aria-label="Custom range" [min]="0" [max]="200" [value]="0" [step]="10" [pin]="true" [ticks]="true"
+          <ion-range aria-label="Custom range" [min]="0" [max]="300" [value]="0" [step]="10" [pin]="true" [ticks]="true"
             [snaps]="true" [(ngModel)]="activity.amount"></ion-range>
         </ion-item>
         <ion-item>
